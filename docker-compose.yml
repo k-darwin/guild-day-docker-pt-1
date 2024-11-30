@@ -1,0 +1,131 @@
+services:
+
+  proxy-service:
+    container_name: proxy-service
+    build: Proxy
+    ports:
+      - "8280:8280"
+    depends_on:
+      - basket-service
+    networks:
+      - ecommerce
+  
+  basket-service:
+    container_name: basket-service
+    build: Basket
+    environment:
+      - REDIS=redis:6379
+    depends_on:
+      - redis
+    networks:
+      - ecommerce
+  
+  product-service:
+    container_name: product-service
+    build: Products
+    environment:
+      PostgresConnectionString : "Host=postgres;Port=5432;Database=ecommerce;Username=postgres;Password=SecurePassword123"
+    depends_on:
+      - postgres
+    networks:
+      - ecommerce
+  
+  order-service:
+    container_name: order-service
+    build: Orders
+    environment:
+      PostgresConnectionString : "Host=postgres;Port=5432;Database=ecommerce;Username=postgres;Password=SecurePassword123"
+      ServiceBusConnectionString : "Endpoint=sb://servicebus-emulator;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;"
+    depends_on:
+      - postgres
+      - sqledge
+      - emulator
+    networks:
+      - ecommerce
+  
+  report-service:
+    container_name: report-service
+    build: Reports
+    environment:
+      MongoConnectionString : "mongodb://mongo:27017"
+      ServiceBusConnectionString : "Endpoint=sb://servicebus-emulator;SharedAccessKeyName=RootManageSharedAccessKey;SharedAccessKey=SAS_KEY_VALUE;UseDevelopmentEmulator=true;"
+    depends_on:
+      - mongo
+      - sqledge
+      - emulator
+    networks:
+      - ecommerce
+
+  # database containers
+  postgres:
+    container_name: postgres
+    image: postgres:latest
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: ${POSTGRES_DB}
+    networks:
+      - ecommerce
+  
+  redis:
+    container_name: redis
+    image: redis:latest
+    volumes:
+      - redis-data:/data
+    ports:
+      - "6379:6379"
+    networks:
+      - ecommerce
+
+  sqledge:
+    container_name: "sqledge"
+    image: "mcr.microsoft.com/azure-sql-edge:latest"
+    networks:
+      ecommerce:
+        aliases:
+          - "sqledge"
+    environment:
+      ACCEPT_EULA: ${ACCEPT_EULA}
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+  
+  mongo:
+    container_name: mongo
+    image: mongo:latest
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+    networks:
+      - ecommerce
+
+  # runtimes/containers for the service bus emulator and dapr
+  emulator:
+    container_name: "servicebus-emulator"
+    image: mcr.microsoft.com/azure-messaging/servicebus-emulator:latest
+    volumes:
+      - "${CONFIG_PATH}:/ServiceBus_Emulator/ConfigFiles/Config.json"
+    ports:
+      - "5672:5672"
+    environment:
+      SQL_SERVER: sqledge  
+      MSSQL_SA_PASSWORD: ${MSSQL_SA_PASSWORD}
+      ACCEPT_EULA: ${ACCEPT_EULA}
+    depends_on:
+      - sqledge
+    networks:
+      ecommerce:
+        aliases:
+          - "sb-emulator"
+
+volumes:
+  mongo-data:
+  postgres-data:
+  redis-data:
+
+networks:
+  ecommerce:
