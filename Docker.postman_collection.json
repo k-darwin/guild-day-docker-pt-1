@@ -1,0 +1,195 @@
+{
+	"info": {
+		"_postman_id": "af7d76f3-4ca6-4f4e-9c0b-51a836aa33fa",
+		"name": "Docker",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "1529302"
+	},
+	"item": [
+		{
+			"name": "Basket",
+			"item": [
+				{
+					"name": "update basket",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[\n    {\n        \"Name\": \"Biscuit\",\n        \"Quantity\": 2,\n        \"Price\": 2.20\n    },\n    {\n        \"Name\": \"biccy\",\n        \"Quantity\": 2,\n        \"Price\": 4.20\n    }\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5063/basket/26f89d44-db84-4cb6-874a-5b13f06fc5b0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5063",
+							"path": [
+								"basket",
+								"26f89d44-db84-4cb6-874a-5b13f06fc5b0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "get basket",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Id\" : \"123\",\n    \"Name\" : \"Biscuit\",\n    \"Quantity\" : 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5063/basket/26f89d44-db84-4cb6-874a-5b13f06fc5b0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5063",
+							"path": [
+								"basket",
+								"26f89d44-db84-4cb6-874a-5b13f06fc5b0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "delete basket",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"Id\" : \"123\",\n    \"Name\" : \"Biscuit\",\n    \"Quantity\" : 2\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5063/basket/26f89d44-db84-4cb6-874a-5b13f06fc5b0",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5063",
+							"path": [
+								"basket",
+								"26f89d44-db84-4cb6-874a-5b13f06fc5b0"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create basket",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "[{\n    \"Name\" : \"Biscuit\",\n    \"Quantity\" : 2,\n    \"Price\" : 2.20\n}\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:5063/basket",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5063",
+							"path": [
+								"basket"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "get products",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:5239/products",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "5239",
+							"path": [
+								"products"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "create order",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n    \"cost\": 100.00,\n    \"orderItems\": [\n        {\n            \"orderId\": 1,\n            \"productId\": 101,\n            \"quantity\": 2,\n            \"cost\": 50.00\n        },\n        {\n            \"orderId\": 1,\n            \"productId\": 102,\n            \"quantity\": 1,\n            \"cost\": 50.00\n        }\n    ]\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:8280/order/orders",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "8280",
+							"path": [
+								"order",
+								"orders"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "Reports",
+			"item": []
+		}
+	]
+}
