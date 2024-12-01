@@ -17,7 +17,7 @@ app.MapPost("/basket", async (List<BasketItem> item, IConnectionMultiplexer redi
     var db = redis.GetDatabase();
     var serializedItem = JsonSerializer.Serialize(item);
     await db.StringSetAsync(id, serializedItem);
-    return Results.Created($"/basket/{id}", item);
+    return Results.Ok(new Basket(id, item));
 });
 
 app.MapGet("/basket/{id}", async (string id, IConnectionMultiplexer redis) =>
@@ -31,9 +31,12 @@ app.MapGet("/basket/{id}", async (string id, IConnectionMultiplexer redis) =>
 app.MapPut("/basket/{id}", async (string id, List<BasketItem> item, IConnectionMultiplexer redis) =>
 {
     var db = redis.GetDatabase();
-    var serializedItem = JsonSerializer.Serialize(item);
-    await db.StringSetAsync(id, serializedItem);
-    return Results.Ok(new Basket(id, item));
+    var serializedItem = await db.StringGetAsync(id);
+    var basketItems = JsonSerializer.Deserialize<List<BasketItem>>(serializedItem);
+    basketItems.AddRange(item);
+    var serializedItems = JsonSerializer.Serialize(basketItems);
+    await db.StringSetAsync(id, serializedItems);
+    return Results.Ok(new Basket(id, basketItems));
 });
 
 app.MapDelete("/basket/{id}", async (string id, IConnectionMultiplexer redis) =>
@@ -46,4 +49,4 @@ app.MapDelete("/basket/{id}", async (string id, IConnectionMultiplexer redis) =>
 app.Run();
 
 record Basket(string Id, List<BasketItem> Items);
-record BasketItem(string Name, int Quantity, decimal Price);
+record BasketItem(string Name, int Quantity, decimal Price, int ProductId);

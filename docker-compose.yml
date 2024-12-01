@@ -1,5 +1,15 @@
 services:
 
+  website:
+    container_name: website
+    build: Web
+    ports:
+      - "3000:3000"
+    environment:
+      GATEWAY_ENDPOINT: "http://proxy-service:8280"
+    networks:
+      - ecommerce
+
   proxy-service:
     container_name: proxy-service
     build: Proxy
