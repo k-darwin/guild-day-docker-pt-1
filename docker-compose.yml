@@ -1,5 +1,13 @@
 services:
 
+  website-reports:
+    container_name: website-reports
+    build: Web-Reports
+    ports:
+      - "8082:80"
+    networks:
+      - ecommerce
+
   website:
     container_name: website
     build: Web
